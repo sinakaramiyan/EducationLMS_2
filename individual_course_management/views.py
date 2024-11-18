@@ -58,7 +58,7 @@ class Chapters(LoginRequiredMixin, TemplateView):
         
         # Find the next chapter after the last completed chapter
         if last_completed_chapter: 
-            next_chapter = Chapter.objects.filter(course=enrolment.course_enroll.course, index__gt=last_completed_chapter.chapter.index).order_by('index').first()
+            next_chapter = chapters.filter(index__gt=last_completed_chapter.chapter.index).order_by('index').first()
         else:
             next_chapter = first_chapter
 
