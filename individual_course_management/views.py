@@ -1,8 +1,11 @@
+from typing import Any
+from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.views.generic import TemplateView
 from .models import Strike, Enrolment, RoleAssignment
 from .models import Course, CourseEnroll, Chapter, ChapterComplete, Lesson, Content, ContentComplete, Template, Quiz, QuizSubmit, ShortQuiz, ShortQuizSubmit
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 
 class Dashboard(LoginRequiredMixin,TemplateView):
     template_name = "individual_course_management/dashboard/dashboard.html"
@@ -30,37 +33,43 @@ class Dashboard(LoginRequiredMixin,TemplateView):
         return context
     
 class Chapters(LoginRequiredMixin, TemplateView):
-    template_name = "individual_course_management/chapter/chapter.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    
+    def get(self, request, *args, **kwargs):
+        if (self.get_context_data(**kwargs)['course']):
+            context = self.get_context_data(**kwargs)
+            return render(request, "individual_course_management/chapter/chapter.html", context)
+        else: 
+            return HttpResponse("This page doesn't exist")
         
+    def get_context_data(self, **kwargs):        
         # get course based on selected course in dashboard
         course_id = self.kwargs.get('course_id')
-        course = Course.objects.filter(id=course_id).first()
-
+        enrolment = Enrolment.objects.filter(role_assignment__user=self.request.user, course_enroll__course=course_id).select_related('role_assignment','course_enroll', 'course_enroll__course', 'course_enroll__course__course_group').first()
+        if not enrolment:
+            return { 'course':''}
+        
         # steps parital page
-        chapters = Chapter.objects.filter(course=course).order_by('index')
+        chapters = Chapter.objects.filter(course=enrolment.course_enroll.course).order_by('index').select_related('course')
         first_chapter = chapters.first()
+        last_chapter = chapters.last()
 
         # find last completed chapter
-        enrolments = Enrolment.objects.filter(role_assignment__user=self.request.user)
-
-        last_completed_chapter = ChapterComplete.objects.filter(enrolment__in=enrolments).last()
+        last_completed_chapter = ChapterComplete.objects.filter(enrolment=enrolment).last()
         
         # Find the next chapter after the last completed chapter
         if last_completed_chapter: 
-            next_chapter = Chapter.objects.filter(index__gt=last_completed_chapter.chapter.index).first()
+            next_chapter = Chapter.objects.filter(course=enrolment.course_enroll.course, index__gt=last_completed_chapter.chapter.index).order_by('index').first()
         else:
             next_chapter = first_chapter
 
         context = {
-            'course': course,
-            'course_group_title': course.course_group.title,
+            'course': enrolment.course_enroll.course,
+            'course_group_title': enrolment.course_enroll.course.course_group.title,
             'chapters': chapters,
             'first_chapter': first_chapter,
-            'last_chapter': chapters.last(),
+            'last_chapter': last_chapter,
             'last_completed_chapter': last_completed_chapter,
             'active_chapter': next_chapter,
         }
         return context
+    
