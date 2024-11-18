@@ -1,0 +1,8 @@
+node_modules
+static_build/
+media/
+webpack-stats.json
+__pycache__
+*.pyc
+.env
+venv
