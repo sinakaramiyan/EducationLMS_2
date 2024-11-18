@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     
     # apps
     'core',
+    'role_management'
 ]
 
 MIDDLEWARE = [
