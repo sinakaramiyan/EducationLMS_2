@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     
     # apps
     'core',
-    'role_management'
+    'role_management',
+    'individual_course_management'
 ]
 
 MIDDLEWARE = [
@@ -218,7 +219,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Django all-auth custom forms
-ACCOUNT_FORMS = {'signup': 'core.forms.UserRegistrationForm'}
+# ACCOUNT_FORMS = {'signup': 'core.forms.UserRegistrationForm'}
 
 # Django-admin-interface
 X_FRAME_OPTIONS = "SAMEORIGIN"
