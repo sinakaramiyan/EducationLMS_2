@@ -200,7 +200,7 @@ class Enrolment(models.Model):
         on_delete=models.CASCADE
     )
 
-    CourseEnroll = models.ForeignKey(
+    course_enroll = models.ForeignKey(
         CourseEnroll,
         verbose_name=_("Course Enroll"),
         on_delete=models.CASCADE

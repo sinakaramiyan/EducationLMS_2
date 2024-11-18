@@ -11,11 +11,10 @@ class Dashboard(LoginRequiredMixin,TemplateView):
         context = super().get_context_data(**kwargs)
         strike = Strike.objects.filter(user=self.request.user, strike_status="active").first()
         role_assignments = RoleAssignment.objects.filter(user=self.request.user)
-        enrolments = Enrolment.objects.filter(role_assignment__in=role_assignments).select_related('CourseEnroll', 'CourseEnroll__course')
-
+        enrolments = Enrolment.objects.filter(role_assignment__in=role_assignments)
         courses = []
         for enrolment in enrolments:
-            courses.append(enrolment.CourseEnroll.course)
+            courses.append(enrolment.course_enroll.course)
 
         context = {
             'strike': strike,
@@ -35,7 +34,7 @@ class Chapters(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # description partial page
+        
         # get course based on selected course in dashboard
         course_id = self.kwargs.get('course_id')
         course = Course.objects.filter(id=course_id).first()
@@ -45,18 +44,13 @@ class Chapters(LoginRequiredMixin, TemplateView):
         first_chapter = chapters.first()
 
         # find last completed chapter
-        role_assignment = RoleAssignment.objects.filter(user=self.request.user)
-        enrolments = Enrolment.objects.filter(role_assignment__in=role_assignment)
+        enrolments = Enrolment.objects.filter(role_assignment__user=self.request.user)
+
         last_completed_chapter = ChapterComplete.objects.filter(enrolment__in=enrolments).last()
         
         # Find the next chapter after the last completed chapter
         if last_completed_chapter: 
-            last_completed_chapter_instance = last_completed_chapter.chapter
-            next_chapter = None
-            for chapter in chapters:
-                if chapter.index > last_completed_chapter_instance.index:
-                    next_chapter = chapter
-                    break
+            next_chapter = Chapter.objects.filter(index__gt=last_completed_chapter.chapter.index).first()
         else:
             next_chapter = first_chapter
 
