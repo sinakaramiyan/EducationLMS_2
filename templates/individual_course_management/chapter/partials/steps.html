@@ -1,0 +1,118 @@
+{% load static %}
+<div class="relative top-[200px] sm:top-[270px] md:top-[380px] lg:top-24 lg:w-2/3">
+    {% for chapter in chapters %}
+        {% if chapter.index == active_chapter.index %}
+            <div id="active_{{chapter.index}}" class="flex flex-col justify-center items-center z-20">
+                <div>
+                    <svg class="w-12 h-12" fill="#2e63cc" width="73px" height="73px" viewBox="-3.12 -3.12 30.24 30.24"
+                        xmlns="http://www.w3.org/2000/svg" stroke="#200c46">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                        <g id="SVGRepo_iconCarrier">
+                            <path d="m0 12c0-6.627 5.373-12 12-12s12 5.373 12 12-5.373 12-12 12c-6.624-.008-11.992-5.376-12-11.999zm2.4 0c0 5.302 4.298 9.6 9.6 9.6s9.6-4.298 9.6-9.6-4.298-9.6-9.6-9.6c-5.299.006-9.594 4.301-9.6 9.599v.001zm4 0c0-3.093 2.507-5.6 5.6-5.6s5.6 2.507 5.6 5.6-2.507 5.6-5.6 5.6c-3.093 0-5.6-2.507-5.6-5.6z" />
+                        </g>
+                    </svg>
+                </div>
+                {#{% url "lessonIntroduction" course.title chapter.title chapter.id %}#}
+                <a href='' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                    <div class='button w-10 h-10 bg-blue-500 cursor-pointer select-none active:translate-y-2  active:[box-shadow:0px_0px_0px_0px_#1b6ff8] active:border-b-[0px] transition-all duration-150 [box-shadow:5px_5px_2px_5px_#1b6ff8] border-[1px] border-blue-400'>
+                        <span
+                            class='flex flex-col justify-center items-center h-full text-white font-bold text-sm -rotate-45'>
+                        </span>
+                    </div>
+                </a>
+                {# progress bar #}
+                <div class="flex w-full h-1 bg-gray-200 overflow-hidden dark:bg-neutral-700 transform z-20" role="progressbar"
+                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                    <div
+                        class="flex flex-col justify-center items-center overflow-hidden bg-green-600 text-xs text-white text-center whitespace-nowrap transition duration-500 w-1/2">
+                    </div>
+                </div>
+                <span>{{ chapter.title }}</span>
+            </div>
+        {% elif chapter.index < active_chapter.index %}
+            <div id="unlock_{{chapter.index}}" class="flex flex-col justify-center items-center z-20">
+                <div>
+                    <svg class="w-10 h-10" fill="#2e63cc" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300.00 300.00" xml:space="preserve" stroke="#5595aa"
+                        stroke-width="0.0029999700000000002">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="2.399976" />
+
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <g>
+                                    <g>
+                                        <path d="M134.437,161.482c-8.613,0-15.598,6.982-15.598,15.598c0,5.778,3.149,10.807,7.817,13.502v17.346h15.562v-17.346 c4.668-2.695,7.817-7.726,7.817-13.502C150.035,168.464,143.05,161.482,134.437,161.482z" />
+                                        <path d="M149.996,0C67.157,0,0.001,67.158,0.001,149.997c0,82.837,67.156,150,149.995,150s150-67.163,150-150 C299.996,67.156,232.835,0,149.996,0z M252.943,134.436h-25.936v-27.915c0-13.108-10.665-23.775-23.773-23.775 c-13.111,0-23.775,10.665-23.775,23.775v25.321h1.063c9.734,0,17.626,7.892,17.626,17.629v56.921 c0,9.736-7.892,17.629-17.626,17.629H88.349c-9.734,0-17.626-7.892-17.626-17.629v-56.924c0-9.736,7.892-17.629,17.626-17.629 h65.174V106.52c0-27.409,22.302-49.711,49.711-49.711s49.709,22.3,49.709,49.711V134.436z" />
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                {#{% url "lessonIntroduction" course.title chapter.title chapter.id %}#}
+                <a href='' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                    <div class='button w-10 h-10 bg-blue-500 cursor-pointer select-none
+                        active:translate-y-2  active:[box-shadow:0px_0px_0px_0px_#1b6ff8] active:border-b-[0px] transition-all  duration-150 [box-shadow:5px_5px_2px_5px_#1b6ff8] border-[1px] border-blue-400'>
+                        <span
+                            class='flex flex-col justify-center items-center h-full text-white font-bold text-sm -rotate-45'>
+                        </span>
+                    </div>
+                </a>
+                <span>{{ chapter.title }}</span>
+            </div>
+        {% elif chapter.index > active_chapter.index %}
+            <div id="lock_{{chapter.index}}" class="flex flex-col justify-center items-center z-20">
+                <div>
+                    <svg class="w-10 h-10" fill="#2e63cc" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="73px" height="73px" viewBox="0 0 342.52 342.52" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+                        <g id="SVGRepo_iconCarrier"> <g> <g> <path d="M171.254,110.681c-14.045,0-25.47,11.418-25.47,25.476v21.773h50.933v-21.773 C196.724,122.104,185.29,110.681,171.254,110.681z"/> <path d="M171.26,0C76.825,0,0.006,76.825,0.006,171.257c0,94.438,76.813,171.263,171.254,171.263 c94.416,0,171.254-76.825,171.254-171.263C342.514,76.825,265.683,0,171.26,0z M226.225,239.291c0,4.119-3.339,7.446-7.458,7.446 h-95.032c-4.113,0-7.446-3.327-7.446-7.446v-73.91c0-4.119,3.333-7.458,7.446-7.458h7.152V136.15 c0-22.266,18.113-40.361,40.367-40.361c22.251,0,40.355,18.095,40.355,40.361v21.773h7.151c4.119,0,7.458,3.338,7.458,7.458v73.91 H226.225z"/> </g> </g> </g>
+                    </svg>
+                </div>
+                <div class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                </div>
+                <span>{{ chapter.title }}</span>
+            </div>
+        {% elif last_completed_chapter.index == active_chapter.index  %}
+            <div class="flex flex-col justify-center items-center z-20">
+                <div>
+                    <svg class="w-10 h-10" fill="#2e63cc" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300.00 300.00" xml:space="preserve" stroke="#5595aa"
+                        stroke-width="0.0029999700000000002">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="2.399976" />
+
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <g>
+                                    <g>
+                                        <path d="M134.437,161.482c-8.613,0-15.598,6.982-15.598,15.598c0,5.778,3.149,10.807,7.817,13.502v17.346h15.562v-17.346 c4.668-2.695,7.817-7.726,7.817-13.502C150.035,168.464,143.05,161.482,134.437,161.482z" />
+                                        <path d="M149.996,0C67.157,0,0.001,67.158,0.001,149.997c0,82.837,67.156,150,149.995,150s150-67.163,150-150 C299.996,67.156,232.835,0,149.996,0z M252.943,134.436h-25.936v-27.915c0-13.108-10.665-23.775-23.773-23.775 c-13.111,0-23.775,10.665-23.775,23.775v25.321h1.063c9.734,0,17.626,7.892,17.626,17.629v56.921 c0,9.736-7.892,17.629-17.626,17.629H88.349c-9.734,0-17.626-7.892-17.626-17.629v-56.924c0-9.736,7.892-17.629,17.626-17.629 h65.174V106.52c0-27.409,22.302-49.711,49.711-49.711s49.709,22.3,49.709,49.711V134.436z" />
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                {#{% url "lessonIntroduction" course.title chapter.title chapter.id %}#}
+                <a href='' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                    <div class='button w-10 h-10 bg-blue-500 cursor-pointer select-none
+                        active:translate-y-2  active:[box-shadow:0px_0px_0px_0px_#1b6ff8] active:border-b-[0px] transition-all  duration-150 [box-shadow:5px_5px_2px_5px_#1b6ff8] border-[1px] border-blue-400'>
+                        <span
+                            class='flex flex-col justify-center items-center h-full text-white font-bold text-sm -rotate-45'>
+                        </span>
+                    </div>
+                </a>
+                <span>{{ chapter.title }}</span>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

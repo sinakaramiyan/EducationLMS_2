@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}دوره {{ course.title }}{% endblock title %}
+{% block main %}
+    <div class="flex flex-col gap-4 justify-between lg:flex-row" style="background-image: url('{% static 'static_src/images/bg-course1.svg' %}');">
+        {# chapter description #}
+        {% include "individual_course_management/chapter/partials/description.html"%}
+        {# chapter steps #}
+        {% include "individual_course_management/chapter/partials/steps.html"%}
+    </div>
+{% endblock main %}

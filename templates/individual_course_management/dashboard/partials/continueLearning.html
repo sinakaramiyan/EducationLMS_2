@@ -2,8 +2,7 @@
     <h2 class="font-bold">ادامه یادگیری</h2>
     <div class="flex gap-2 flex-wrap">
         {% for course in courses %}
-            {#{% url "chapters" course.title course.id %}#}
-            <a href='' class="flex flex-col items-center my-4 cursor-pointer pb-2 hover:border-b hover:border-zinc-300">
+            <a href='{% url "chapters" course.title course.id %}' class="flex flex-col items-center my-4 cursor-pointer pb-2 hover:border-b hover:border-zinc-300">
                 <div class="flex flex-col gap-4 p-4 justify-center items-center border border-zinc-300 w-full shadow-md">
                     <svg class="w-32 h-20">
                         <metadata id="metadata2193">
