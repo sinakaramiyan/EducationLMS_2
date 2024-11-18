@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+
+{% block title %}داشبورد{% endblock title %}
+
+{% block main %}
+{# home dashboard page for user #} 
+<div class="flex flex-col lg:flex-row">
+    {# column strike and league #}
+    <div class="flex flex-col gap-4 p-2 top-0 w-full lg:w-[60%]">
+        {# title #}
+        <h2 class="text-base font-bold">{{ user.first_name }} {{ user.last_name }} عزیز خوش آمدی!</h2>
+        {# strike #}
+        {% include "individual_course_management/dashboard/partials/strike.html" with strike=strike %}
+        {# league #}
+        {% include "individual_course_management/dashboard/partials/league.html" %}
+    </div>
+    {# column continue learning #}
+    <div class="flex flex-col p-2 w-full mt-10 overflow-y-hidden ">
+        {# continue learnign #}
+        {% include "individual_course_management/dashboard/partials/continueLearning.html" with courses=courses %}
+    </div>
+</div>
+{% endblock main %}
