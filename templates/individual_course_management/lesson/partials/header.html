@@ -1,0 +1,35 @@
+<nav class="flex justify-between h-16 items-center dark:bg-slate-600">
+    <div class="flex flex-row gap-2 items-center justify-center">
+        <a href="{% url 'chapters' content.lesson.chapter.course.id %}" class="border-2 border-black dark:border-white p-1">
+            <svg class="w-4 h-4 dark:fill-white" viewBox="0 0 14 14" focusable="false" class="chakra-icon css-5qgw6i" aria-hidden="true"><path d="M7.00003 5.58577L2.05024 0.635986L0.636031 2.0502L5.58582 6.99999L0.636019 11.9498L2.05023 13.364L7.00003 8.4142L11.9497 13.3639L13.364 11.9497L8.41425 6.99999L13.3639 2.05029L11.9497 0.636079L7.00003 5.58577Z"></path></svg>
+        </a>
+    </div>
+    <div class="flex w-full md:w-3/4 lg:w-1/2 gap-2 justify-center items-center mx-2 ease-in-out duration-500">
+        {# Pervious content #}
+        {% if page_obj.has_previous %}
+            <a href="{% url 'Contents' page_obj.previous_page_number %}" class="cursor-pointer hidden md:block">
+                <svg class="w-3 h-3 rotate-90 " viewBox="0 0 12 8" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.7071 6.14644L10.2929 7.56065L6.00001 3.26776L1.70712 7.56065L0.292908 6.14644L6.00001 0.439331L11.7071 6.14644Z"></path></svg>
+            </a>
+        {% endif %}
+        {# progressbar #}
+        <div class="flex w-full gap-2">
+            {% for content in page_obj.paginator.page_range %}
+                <a href="{% url 'Contents' content %}" class="flex w-full h-3 bg-gray-200 overflow-hidden dark:bg-neutral-700 cursor-pointer">
+                    <div class="flex flex-col justify-center items-center overflow-hidden bg-green-600 text-xs text-white text-center whitespace-nowrap transition duration-500"></div>
+                </a>
+            {% endfor %}
+        </div>
+        {# next content #}
+        {% if page_obj.has_next %}
+            <a href="{% url 'Contents' page_obj.next_page_number %}" class="cursor-pointer -rotate-180 hidden md:block">
+                <svg class="w-3 h-3 rotate-90 " viewBox="0 0 12 8" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.7071 6.14644L10.2929 7.56065L6.00001 3.26776L1.70712 7.56065L0.292908 6.14644L6.00001 0.439331L11.7071 6.14644Z"></path></svg>
+            </a>
+        {% endif %}
+    </div>
+    <div class="flex flex-row items-center justify-start select-none cursor-pointer ease-in-out duration-500">
+        <span class="text-2xl font-bold">0</span>
+        <svg class="w-8 h-8 fill-white stroke-[0.5px] stroke-black dark:stroke-white" viewBox="0 0 32 32" focusable="false" class="chakra-icon css-y0f7a" xmlns="http://www.w3.org/2000/svg">
+            <path id="strike" d="M22.676 11.3021H16.9944L19.1005 4.98646C19.2964 4.20312 18.7087 3.46875 17.974 3.46875H10.9209C10.3331 3.46875 9.79435 3.90937 9.74537 4.49687L8.17802 16.2469C8.08006 16.9812 8.61883 17.5687 9.35353 17.5687H15.1331L12.8801 27.1156C12.7331 27.85 13.2719 28.5354 14.0066 28.5354C14.4474 28.5354 14.8393 28.3396 15.0352 27.9479L23.6556 13.0646C24.1454 12.3302 23.5577 11.3021 22.676 11.3021Z"></path>
+        </svg>
+    </div>
+</nav>

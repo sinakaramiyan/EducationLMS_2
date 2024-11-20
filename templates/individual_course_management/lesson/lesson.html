@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+{% block title %}lesson{% endblock title %}
+{% block main %}
+    <div id="lesson" class="flex flex-col items-center">
+        <header class="fixed top-0 w-full h-16 bg-zinc-50 z-40 dark:bg-slate-600 px-8 shadow-md">
+            {% include "individual_course_management/lesson/partials/header.html" %}
+        </header>
+    </div>
+    <div>
+        {% if content.index == 1 %}
+            {% include "individual_course_management/lesson/partials/introduction.html" %}
+        {% elif content.index == page_obj.paginator.num_pages %}
+            {% include "individual_course_management/lesson/partials/review.html" %}
+        {% else %}
+            {% include "individual_course_management/lesson/partials/mainLesson.html" %}
+        {% endif %}
+    </div>
+{% endblock main %}

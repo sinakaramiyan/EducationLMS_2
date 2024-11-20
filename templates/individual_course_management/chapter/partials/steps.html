@@ -1,8 +1,8 @@
 {% load static %}
 <div class="relative top-[200px] sm:top-[270px] md:top-[380px] lg:top-24 lg:w-2/3">
-    {% for chapter in chapters %}
-        {% if chapter.index == active_chapter.index %}
-            <div id="active_{{chapter.index}}" class="flex flex-col justify-center items-center z-20">
+    {% for first_content in first_contents %}
+        {% if first_content.lesson.chapter.index == active_chapter.index %}
+            <div id="active_{{first_content.lesson.chapter.index}}" class="flex flex-col justify-center items-center z-20">
                 <div>
                     <svg class="w-12 h-12" fill="#2e63cc" width="73px" height="73px" viewBox="-3.12 -3.12 30.24 30.24"
                         xmlns="http://www.w3.org/2000/svg" stroke="#200c46">
@@ -13,8 +13,7 @@
                         </g>
                     </svg>
                 </div>
-                {#{% url "lessonIntroduction" course.title chapter.title chapter.id %}#}
-                <a href='' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                <a href='{% url "Contents" first_content.id %}' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
                     <div class='button w-10 h-10 bg-blue-500 cursor-pointer select-none active:translate-y-2  active:[box-shadow:0px_0px_0px_0px_#1b6ff8] active:border-b-[0px] transition-all duration-150 [box-shadow:5px_5px_2px_5px_#1b6ff8] border-[1px] border-blue-400'>
                         <span
                             class='flex flex-col justify-center items-center h-full text-white font-bold text-sm -rotate-45'>
@@ -28,10 +27,10 @@
                         class="flex flex-col justify-center items-center overflow-hidden bg-green-600 text-xs text-white text-center whitespace-nowrap transition duration-500 w-1/2">
                     </div>
                 </div>
-                <span>{{ chapter.title }}</span>
+                <span>{{ first_content.lesson.chapter.title }}</span>
             </div>
-        {% elif chapter.index < active_chapter.index %}
-            <div id="unlock_{{chapter.index}}" class="flex flex-col justify-center items-center z-20">
+        {% elif first_content.lesson.chapter.index < active_chapter.index %}
+            <div id="unlock_{{first_content.lesson.chapter.index}}" class="flex flex-col justify-center items-center z-20">
                 <div>
                     <svg class="w-10 h-10" fill="#2e63cc" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300.00 300.00" xml:space="preserve" stroke="#5595aa"
@@ -53,8 +52,7 @@
                         </g>
                     </svg>
                 </div>
-                {#{% url "lessonIntroduction" course.title chapter.title chapter.id %}#}
-                <a href='' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                <a href='{% url "Contents" first_content.id %}' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
                     <div class='button w-10 h-10 bg-blue-500 cursor-pointer select-none
                         active:translate-y-2  active:[box-shadow:0px_0px_0px_0px_#1b6ff8] active:border-b-[0px] transition-all  duration-150 [box-shadow:5px_5px_2px_5px_#1b6ff8] border-[1px] border-blue-400'>
                         <span
@@ -62,10 +60,10 @@
                         </span>
                     </div>
                 </a>
-                <span>{{ chapter.title }}</span>
+                <span>{{ first_content.lesson.chapter.title }}</span>
             </div>
-        {% elif chapter.index > active_chapter.index %}
-            <div id="lock_{{chapter.index}}" class="flex flex-col justify-center items-center z-20">
+        {% elif first_content.lesson.chapter.index > active_chapter.index %}
+            <div id="lock_{{first_content.lesson.chapter.index}}" class="flex flex-col justify-center items-center z-20">
                 <div>
                     <svg class="w-10 h-10" fill="#2e63cc" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="73px" height="73px" viewBox="0 0 342.52 342.52" xml:space="preserve">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -77,7 +75,7 @@
                 </div>
                 <div class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
                 </div>
-                <span>{{ chapter.title }}</span>
+                <span>{{ first_content.lesson.chapter.title }}</span>
             </div>
         {% elif last_completed_chapter.index == active_chapter.index  %}
             <div class="flex flex-col justify-center items-center z-20">
@@ -102,8 +100,7 @@
                         </g>
                     </svg>
                 </div>
-                {#{% url "lessonIntroduction" course.title chapter.title chapter.id %}#}
-                <a href='' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
+                <a href='{% url "Contents" first_content.id %}' class="duration-700 ease-in-out flex justify-center items-center transform rotate-x-60 rotate-45 border-[1px] border-blue-400 bg-blue-500 w-20 h-20 [box-shadow:5px_5px_3px_5px_#1b6ff8]">
                     <div class='button w-10 h-10 bg-blue-500 cursor-pointer select-none
                         active:translate-y-2  active:[box-shadow:0px_0px_0px_0px_#1b6ff8] active:border-b-[0px] transition-all  duration-150 [box-shadow:5px_5px_2px_5px_#1b6ff8] border-[1px] border-blue-400'>
                         <span
@@ -111,7 +108,7 @@
                         </span>
                     </div>
                 </a>
-                <span>{{ chapter.title }}</span>
+                <span>{{ first_content.lesson.chapter.title }}</span>
             </div>
         {% endif %}
     {% endfor %}
