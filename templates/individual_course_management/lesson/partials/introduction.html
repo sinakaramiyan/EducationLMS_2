@@ -4,7 +4,7 @@
     <div class="mt-20 w-1/2 mx-14 mb-10">
         <h1 class="text-lg md:text-4xl font-bold">{{ content.title }}</h1>
         <p class="text-justify my-6">{{ content.description }}</p>
-        <a href='' class="inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">شروع درس</a>
+        <a href="{% url 'Contents' page_obj.next_page_number %}" class="inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">شروع درس</a>
     </div>
     {# Image section #}
     <div class="w-1/2">

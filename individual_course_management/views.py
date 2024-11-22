@@ -1,5 +1,3 @@
-from typing import Any
-from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.views.generic import TemplateView
 from .models import Strike, Enrolment, RoleAssignment
@@ -7,6 +5,7 @@ from .models import Course, CourseEnroll, Chapter, ChapterComplete, Lesson, Cont
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render
+from django.views.generic import View
 
 class Dashboard(LoginRequiredMixin,TemplateView):
     template_name = "individual_course_management/dashboard/dashboard.html"
@@ -36,7 +35,7 @@ class Dashboard(LoginRequiredMixin,TemplateView):
 class Chapters(LoginRequiredMixin, TemplateView):
     
     def get(self, request, *args, **kwargs):
-        if (self.get_context_data(**kwargs)['course']):
+        if self.get_context_data(**kwargs)['course']:
             context = self.get_context_data(**kwargs)
             return render(request, "individual_course_management/chapter/chapter.html", context)
         else: 
@@ -86,9 +85,128 @@ class Contents(LoginRequiredMixin, TemplateView):
         paginator = Paginator(contents, per_page=1)
         page_obj = paginator.get_page(content.index)
         
+        templates = Template.objects.filter(content=content_id).select_related('content').order_by('index')
+
+        first_uncomplete_template = None
+        next_first_uncomplete_template = None
+
+        for template in templates:
+            if template.completed == False:
+                first_uncomplete_template = template
+                next_first_uncomplete_template = Template.objects.get(content=template.content, index=first_uncomplete_template.index+1)
+                break
+        
         context = {
             'page_obj': page_obj,
             # 'content': page_obj.object_list[0],
             'content': content,
+            'templates': templates,
+            'first_uncomplete_template': first_uncomplete_template,
+            'next_first_uncomplete_template': next_first_uncomplete_template
         }
+
+        # Show next content button in template
+        if templates.last():
+            all_templates_completed = templates.last().completed
+            context.update({
+                'all_templates_completed': all_templates_completed
+            })
         return context
+    
+class Templates(LoginRequiredMixin, TemplateView):
+    template_name = 'individual_course_management/template/text_book.html'
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if self.get_context_data(**kwargs)['type'] == 'quiz':
+            template_name = "individual_course_management/template/quiz.html"
+        elif self.get_context_data(**kwargs)['type'] == 'shortquiz':
+            template_name = "individual_course_management/template/short_quiz.html"
+        else:
+            template_name = 'individual_course_management/template/text_book.html'
+        
+        return render(request, template_name, context)
+    
+    def get_context_data(self, **kwargs):
+        template_id = self.kwargs.get('template_id')
+        template = Template.objects.filter(id=template_id).first()
+
+        context = {
+            'template': template,
+            'type': template.type,
+        }
+        next_template = Template.objects.filter(content=template.content, index=template.index+1).first()
+        if next_template:
+            context.update({
+                'next_template': next_template,
+            })
+        else:
+            next_content = Content.objects.filter(lesson=template.content.lesson, index=template.content.index+1).first()
+            if next_content:
+                context.update({
+                    'next_content': next_content
+                })
+            print(next_content,'next_content')
+                
+            
+
+        if template.type == 'quiz':
+            quiz = Quiz.objects.filter(template=template_id).select_related('template').first()
+            context.update({
+                'quiz': quiz
+            })
+        elif template.type == 'shortquiz':
+            short_quiz = ShortQuiz.objects.filter(template=template_id).select_related('template').first()
+            context.update({
+                'short_quiz': short_quiz
+            })
+
+        return context
+    
+class TemplateComplited(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            print("Received data:", request.body)
+            data = json.loads(request.body)
+
+            enrolment = Enrolment.objects.get(role_assignment__user=self.request.user)
+
+            if(data['template'] == 'textbook'):
+                template_text = Template.objects.get(id=data['template_id'])
+                template_text.completed = True
+                template_text.save()
+            elif(data['template'] == 'quiz'):
+                template_text = Template.objects.get(id=data['template_id'])
+                template_text.completed = True
+                template_text.save()
+
+                quiz = Quiz.objects.get(template=data['template_id'])
+
+                quiz_submit = QuizSubmit(
+                    quiz = quiz,
+                    enrolment = enrolment,
+                    answer = data['quiz_answer'],
+                    is_correct = data['is_correct'],
+                    created_at=timezone.now().date(),
+                    modified_at=timezone.now().date()
+                )
+                quiz_submit.save()
+
+            elif(data['template'] == 'short_quiz'):
+                template_text = Template.objects.get(id=data['template_id'])
+                template_text.completed = True
+                template_text.save()
+
+                short_quiz = ShortQuiz.objects.get(template=data['template_id'])
+
+                short_quiz_submit = ShortQuizSubmit(
+                    short_quiz = short_quiz,
+                    enrolment = enrolment,
+                    answer = data['short_quiz_answer'],
+                    is_correct = data['is_correct'],
+                    created_at=timezone.now().date(),
+                    modified_at=timezone.now().date()
+                )
+                short_quiz_submit.save()
+        except:
+            print('sina')
+        return JsonResponse({'data': data})

@@ -6,13 +6,11 @@
             {% include "individual_course_management/lesson/partials/header.html" %}
         </header>
     </div>
-    <div>
-        {% if content.index == 1 %}
-            {% include "individual_course_management/lesson/partials/introduction.html" %}
-        {% elif content.index == page_obj.paginator.num_pages %}
-            {% include "individual_course_management/lesson/partials/review.html" %}
-        {% else %}
-            {% include "individual_course_management/lesson/partials/mainLesson.html" %}
-        {% endif %}
-    </div>
+    {% if content.index == 1 %}
+        {% include "individual_course_management/lesson/partials/introduction.html" %}
+    {% elif content.index == page_obj.paginator.num_pages %}
+        {% include "individual_course_management/lesson/partials/review.html" %}
+    {% else %}
+        {% include "individual_course_management/lesson/partials/mainLesson.html" %}
+    {% endif %}
 {% endblock main %}

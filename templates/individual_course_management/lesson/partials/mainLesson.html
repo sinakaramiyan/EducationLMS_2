@@ -2,11 +2,24 @@
     <div class="w-full my-4">
         <h2 class="text-3xl font-bold border-b">{{ content.title }}</h2>
     </div>
-    
     <div id="templates" class="flex flex-col gap-6 w-full items-center justify-center">
+        {% for template in templates%}
+            {% if template.completed %}
+                <div hx-get='{% url "templates" template.id %}' hx-trigger="load" hx-target="#templates"></div>
+                completed
+            {% endif %}      
+        {% endfor %}
+        {% if first_uncomplete_template %}
+            <div hx-get='{% url "templates" first_uncomplete_template.id %}' hx-trigger="load" ></div>
+        {% else %}
+            <div class="w-full border-t py-4">
+                <a href="{% url 'Contents' page_obj.next_page_number %}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>
+            </div>
+        {% endif %}
     </div>
-
-    <div id="next_content_html" class="w-full my-4 border-t py-4 hidden">
-        
-    </div>
+    {% if all_templates_completed %}
+        <div class="w-full border-t py-4">
+            <a href="{% url 'Contents' page_obj.next_page_number %}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>
+        </div>
+    {% endif %}
 </div>
