@@ -5,11 +5,11 @@
         <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-96 mx-auto"/>
         <div class="flex flex-col gap-6">
             <h2 class="text-sm">{{short_quiz.question}}</h2>
-            <div id="check_answer_{{short_quiz.id}}" class="flex flex-col gap-2">
+            <div id="short_quiz_answer_{{short_quiz.id}}" class="flex flex-col gap-2">
                 <button hx-post="{% url 'shortQuizCompleted' %}" 
                         hx-trigger="click" 
                         hx-vals='{"answer": "1", "short_quiz_id": "{{ short_quiz.id }}"}' 
-                        hx-target="#check_answer_{{short_quiz.id}}" 
+                        hx-target="#short_quiz_answer_{{short_quiz.id}}" 
                         hx-swap="innerHTML" 
                         class="border border-zinc-300 p-1 bg-zinc-200 hover:border-black cursor-pointer">
                     {{short_quiz.option1}}
@@ -17,7 +17,7 @@
                 <button hx-post="{% url 'shortQuizCompleted' %}" 
                         hx-trigger="click" 
                         hx-vals='{"answer": "2", "short_quiz_id": "{{ short_quiz.id }}"}' 
-                        hx-target="#check_answer_{{short_quiz.id}}" 
+                        hx-target="#short_quiz_answer_{{short_quiz.id}}" 
                         hx-swap="innerHTML" 
                         class="border border-zinc-300 p-1 bg-zinc-200 hover:border-black cursor-pointer">
                     {{short_quiz.option2}}

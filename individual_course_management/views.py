@@ -213,3 +213,57 @@ class ShortQuizComplited(View):
             )
 
         return HttpResponse(html_response)
+    
+class QuizComplited(View):
+    def post(self, request, *args, **kwargs):
+        answer = request.POST.get('answer')
+        quiz_id = request.POST.get('quiz_id')
+        
+        quiz = Quiz.objects.filter(id=quiz_id).first()
+        enrolment = Enrolment.objects.filter(role_assignment__user=self.request.user, course_enroll__course=quiz.template.content.lesson.chapter.course).select_related('role_assignment','course_enroll__course__course_group').first()
+        next_template = Template.objects.filter(content=quiz.template.content, index=quiz.template.index+1).select_related('content').first()
+        quiz_submit = QuizSubmit(
+            quiz = quiz,
+            enrolment = enrolment,
+            answer = f'option{answer}',
+            is_correct = True if quiz.correct_option == f'option{answer}' else False,
+        )
+        # quiz_submit.save()
+
+        template = Template.objects.get(id=quiz.template.id)
+        template.completed = True
+        # template.save()
+            
+        html_response = ''
+        if f'option{answer}' == 'option1':
+            html_response = f'<li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" checked  /><span>{quiz.option1}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option2}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option3}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option4}</span></li>'
+        elif f'option{answer}' == 'option2':
+            html_response = f'<li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" /><span>{quiz.option1}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" checked /><span>{quiz.option2}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option3}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option4}</span></li>'
+        elif f'option{answer}' == 'option3':
+            html_response = f'<li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" /><span>{quiz.option1}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option2}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" checked /><span>{quiz.option3}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option4}</span></li>'
+        elif f'option{answer}' == 'option4':
+            html_response = f'<li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" /><span>{quiz.option1}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option2}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled=""  /><span>{quiz.option3}</span></li><li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" checked /><span>{quiz.option4}</span></li>'
+
+
+        if f'option{answer}' == quiz.correct_option:
+            html_response += f'<div class="flex justify-between w-full"><div class="flex gap-2"><span class="font-bold">درست</span></div><div class="p-1 text-sm bg-blue-200">{quiz.score}</div></div>'
+        else: 
+            html_response += f'<div class="flex justify-between w-full"><div class="flex gap-2"><span class="font-bold text-red-700">غلط</span></div></div>'
+
+        if next_template:
+            next_template_url = reverse("templates", args=[next_template.id])
+            html_response += (
+                '<div class="flex justify-end border-y py-4 w-full">'
+                f'<a hx-get="{next_template_url}" hx-trigger="click" hx-target="#templates" hx-swap="beforeend" hx-on::after-request="this.closest(\'.flex\').remove()" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer border border-blue-500 text-blue-500 bg-white hover:bg-blue-100 focus:ring-2 focus:ring-blue-300">بخش بعد</a>'
+                '</div>'
+            )
+        else:
+            next_content = Content.objects.filter(lesson=quiz.template.content.lesson, id=quiz.template.content.id+1).select_related('lesson').first()
+            next_content_url = reverse("Contents", args=[next_content.id])
+            html_response += (
+                '<div class="flex justify-end w-full py-4 mt-2">'
+                f'<a href="{next_content_url}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>'
+                '</div>'
+            )
+
+        return HttpResponse(html_response)
