@@ -94,7 +94,7 @@ class Contents(LoginRequiredMixin, TemplateView):
         for template in templates:
             if template.completed == False:
                 first_uncomplete_template = template
-                next_first_uncomplete_template = Template.objects.get(content=template.content, index=first_uncomplete_template.index+1)
+                next_first_uncomplete_template = Template.objects.filter(content=template.content, index=first_uncomplete_template.index+1).first()
                 break
         
         context = {
