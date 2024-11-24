@@ -164,7 +164,35 @@ class Templates(LoginRequiredMixin, TemplateView):
             })
 
         return context
-    
+
+class TextBookComplited(View):
+    def post(self, request, *args, **kwargs):
+        template_id = request.POST.get('template_id')
+        template = Template.objects.filter(id=template_id).first()
+        next_template = Template.objects.filter(content=template.content, index=template.index+1).select_related('content').first()
+
+        template.completed = True
+        # template.save()
+
+        html_response = ''
+        if next_template:
+            next_template_url = reverse("templates", args=[next_template.id])
+            html_response += (
+                '<div class="flex justify-end border-y py-4 w-full">'
+                f'<a hx-get="{next_template_url}" hx-trigger="click" hx-target="#templates" hx-swap="beforeend" hx-on::after-request="this.closest(\'.flex\').remove()" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer border border-blue-500 text-blue-500 bg-white hover:bg-blue-100 focus:ring-2 focus:ring-blue-300">بخش بعد</a>'
+                '</div>'
+            )
+        else:
+            next_content = Content.objects.filter(lesson=template.content.lesson, id=template.content.id+1).select_related('lesson').first()
+            next_content_url = reverse("Contents", args=[next_content.id])
+            html_response += (
+                '<div class="flex justify-end w-full border-y py-4">'
+                f'<a href="{next_content_url}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>'
+                '</div>'
+            )
+
+        return HttpResponse(html_response)
+
 class ShortQuizComplited(View):
     def post(self, request, *args, **kwargs):
         answer = request.POST.get('answer')

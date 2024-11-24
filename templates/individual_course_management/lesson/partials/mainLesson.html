@@ -6,6 +6,7 @@
         {% for template in templates%}
             {% if template.completed %}
                 <div hx-get='{% url "templates" template.id %}' hx-trigger="load" hx-target="#templates"></div>
+                completed
             {% endif %}      
         {% endfor %}
         {% if first_uncomplete_template %}
