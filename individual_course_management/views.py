@@ -180,6 +180,10 @@ class ShortQuizComplited(View):
             is_correct = True if short_quiz.correct_option == f'option{answer}' else False,
         )
         # short_quiz_submit.save()
+
+        template = Template.objects.get(id=short_quiz.template.id)
+        template.completed = True
+        # template.save()
             
         html_response = ''
         if f'option{answer}' == short_quiz.correct_option:
@@ -207,6 +211,5 @@ class ShortQuizComplited(View):
                 f'<a href="{next_content_url}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>'
                 '</div>'
             )
-
 
         return HttpResponse(html_response)
