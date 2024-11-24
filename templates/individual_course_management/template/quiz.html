@@ -1,59 +1,145 @@
-{% if quiz_completed %}
-
-{% else %}
-<div class="flex justify-center w-full mb-4">
-    <div class="flex flex-col justify-between items-start w-full bg-zinc-50 backface-hidden transform transition duration-[1.5s]">
-        <div class="w-full p-4">
-            <div class="flex flex-col justify-center my-4">
-                <div class="flex w-full justify-center items-center">
-                    <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-80" />
-                </div>
-                
-                <h2 class="text-lg"><span class="font-bold ml-4 text-2xl">?</span>{{quiz.question}}</h2>
-                <ul id="quiz_answer_{{quiz.id}}" class="flex flex-col justify-center p-4 gap-4 select-none">
-                    <li hx-post="{% url 'quizComplited' %}"
-                        hx-trigger="click" 
-                        hx-vals='{"answer": "1", "quiz_id": "{{ quiz.id }}"}' 
-                        hx-target="#quiz_answer_{{quiz.id}}" 
-                        hx-swap="innerHTML" 
-                        class="flex items-center gap-4 cursor-pointer">
-
-                        <input type="checkbox" class="w-5 h-5" />
-                        <span>{{quiz.option1}}</span>
-                    </li>
-                    <li hx-post="{% url 'quizComplited' %}"
-                        hx-trigger="click" 
-                        hx-vals='{"answer": "2", "quiz_id": "{{ quiz.id }}"}' 
-                        hx-target="#quiz_answer_{{quiz.id}}" 
-                        hx-swap="innerHTML" 
-                        class="flex items-center gap-4 cursor-pointer">
-                        
-                        <input type="checkbox" class="w-5 h-5" />
-                        <span>{{quiz.option2}}</span>
-                    </li>
-                    <li hx-post="{% url 'quizComplited' %}"
-                        hx-trigger="click" 
-                        hx-vals='{"answer": "3", "quiz_id": "{{ quiz.id }}"}' 
-                        hx-target="#quiz_answer_{{quiz.id}}" 
-                        hx-swap="innerHTML" 
-                        class="flex items-center gap-4 cursor-pointer">
-                        
-                        <input type="checkbox" class="w-5 h-5" />
-                        <span>{{quiz.option3}}</span>
-                    </li>
-                    <li hx-post="{% url 'quizComplited' %}"
-                        hx-trigger="click" 
-                        hx-vals='{"answer": "4", "quiz_id": "{{ quiz.id }}"}' 
-                        hx-target="#quiz_answer_{{quiz.id}}" 
-                        hx-swap="innerHTML" 
-                        class="flex items-center gap-4 cursor-pointer">
-                        
-                        <input type="checkbox" class="w-5 h-5" />
-                        <span>{{quiz.option4}}</span>
-                    </li>
-                </ul>
-            </div>
+{% if template.completed %}
+    <div class="flex flex-col justify-center my-4 p-4 w-full bg-zinc-50">
+        <div class="flex w-full justify-center items-center">
+            <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-80" />
         </div>
+        
+        <h2 class="text-lg"><span class="font-bold ml-4 text-2xl">?</span>{{quiz.question}}</h2>
+        <ul class="flex flex-col justify-center p-4 gap-4 select-none">
+            {% if quiz_completed.answer == 'option1' %}
+                <li class="flex items-center gap-4"><input type="checkbox" class="w-5 h-5" disabled="" checked  />
+                    <span>{{quiz.option1}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled=""  />
+                    <span>{{quiz.option2}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled=""  />
+                    <span>{{quiz.option3}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled=""  />
+                    <span>{{quiz.option4}}</span>
+                </li>
+            {% elif quiz_completed.answer == 'option2' %}
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" />
+                    <span>{{quiz.option1}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" checked />
+                    <span>{{quiz.option2}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled=""  />
+                    <span>{{quiz.option3}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled=""  />
+                    <span>{{quiz.option4}}</span>
+                </li>
+            {% elif quiz_completed.answer == 'option3' %}
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" />
+                    <span>{{quiz.option1}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" />
+                    <span>{{quiz.option2}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" checked />
+                    <span>{{quiz.option3}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled=""  />
+                    <span>{{quiz.option4}}</span>
+                </li>
+            {% elif quiz_completed.answer == 'option4' %}
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" />
+                    <span>{{quiz.option1}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" />
+                    <span>{{quiz.option2}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" />
+                    <span>{{quiz.option3}}</span>
+                </li>
+                <li class="flex items-center gap-4">
+                    <input type="checkbox" class="w-5 h-5" disabled="" checked />
+                    <span>{{quiz.option4}}</span>
+                </li>
+            {% endif %}
+        </ul>
+        {% if quiz.correct_option == quiz_completed.answer %}
+            <div class="flex justify-between w-full p-4">
+                <div class="flex gap-2"><span class="font-bold">درست</span>
+                </div>
+                <div class="p-1 text-sm bg-blue-200">{{quiz.score}}</div>
+            </div>
+        {% else %}
+            <div class="flex justify-between w-full p-4">
+                <div class="flex gap-2">
+                    <span class="font-bold text-red-700">غلط</span>
+                </div>
+            </div>
+        {% endif %}
     </div>
-</div>
+{% else %}
+    <div class="flex flex-col justify-center my-4 p-4 w-full bg-zinc-50">
+        <div class="flex w-full justify-center items-center">
+            <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-80" />
+        </div>
+        
+        <h2 class="text-lg">
+            <span class="font-bold ml-4 text-2xl">?</span>
+            {{quiz.question}}
+        </h2>
+        <ul id="quiz_answer_{{quiz.id}}" class="flex flex-col justify-center p-4 gap-4 select-none">
+            <li hx-post="{% url 'quizComplited' %}"
+                hx-trigger="click" 
+                hx-vals='{"answer": "1", "quiz_id": "{{ quiz.id }}"}' 
+                hx-target="#quiz_answer_{{quiz.id}}" 
+                hx-swap="innerHTML" 
+                class="flex items-center gap-4 cursor-pointer">
+
+                <input type="checkbox" class="w-5 h-5" />
+                <span>{{quiz.option1}}</span>
+            </li>
+            <li hx-post="{% url 'quizComplited' %}"
+                hx-trigger="click" 
+                hx-vals='{"answer": "2", "quiz_id": "{{ quiz.id }}"}' 
+                hx-target="#quiz_answer_{{quiz.id}}" 
+                hx-swap="innerHTML" 
+                class="flex items-center gap-4 cursor-pointer">
+                
+                <input type="checkbox" class="w-5 h-5" />
+                <span>{{quiz.option2}}</span>
+            </li>
+            <li hx-post="{% url 'quizComplited' %}"
+                hx-trigger="click" 
+                hx-vals='{"answer": "3", "quiz_id": "{{ quiz.id }}"}' 
+                hx-target="#quiz_answer_{{quiz.id}}" 
+                hx-swap="innerHTML" 
+                class="flex items-center gap-4 cursor-pointer">
+                
+                <input type="checkbox" class="w-5 h-5" />
+                <span>{{quiz.option3}}</span>
+            </li>
+            <li hx-post="{% url 'quizComplited' %}"
+                hx-trigger="click" 
+                hx-vals='{"answer": "4", "quiz_id": "{{ quiz.id }}"}' 
+                hx-target="#quiz_answer_{{quiz.id}}" 
+                hx-swap="innerHTML" 
+                class="flex items-center gap-4 cursor-pointer">
+                
+                <input type="checkbox" class="w-5 h-5" />
+                <span>{{quiz.option4}}</span>
+            </li>
+        </ul>
+    </div>
 {% endif %}

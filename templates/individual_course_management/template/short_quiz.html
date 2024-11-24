@@ -1,5 +1,29 @@
-{% if short_quiz_completed %}
-
+{% if template.completed %}
+    <div class="flex flex-col gap-6">
+        <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-96 mx-auto"/>
+        <div class="flex flex-col gap-6">
+            <h2 class="text-sm">{{short_quiz.question}}</h2>
+            <div class="flex flex-col gap-2">
+                {% if quiz_completed.answer == short_quiz.correct_option %}
+                    {% if short_quiz.correct_option == 'option1' %}
+                        <div class="border border-zinc-300 p-1 select-none" style="background-color: green">{{short_quiz.option1}}</div>
+                        <div class="border border-zinc-300 p-1 select-none">{{short_quiz.option2}}</div>
+                    {% else %}
+                        <div class="border border-zinc-300 p-1 select-none">{{short_quiz}.option1}</div>
+                        <div class="border border-zinc-300 p-1 select-none" style="background-color: green">{{short_quiz.option2}}</div>
+                    {% endif %}
+                {% else %}
+                    {% if short_quiz.correct_option == 'option1' %}
+                        <div class="border border-zinc-300 p-1 select-none">{{short_quiz.option1}}</div>
+                        <div class="border border-zinc-300 p-1 select-none" style="background-color: red">{{short_quiz.option2}}</div>
+                    {% else %}
+                        <div class="border border-zinc-300 p-1 select-none" style="background-color: red">{{short_quiz.option1}}</div>
+                        <div class="border border-zinc-300 p-1 select-none">{{short_quiz.option2}}</div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% else %}
     <div class="flex flex-col gap-6">
         <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-96 mx-auto"/>

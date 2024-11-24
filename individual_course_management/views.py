@@ -172,7 +172,7 @@ class TextBookComplited(View):
         next_template = Template.objects.filter(content=template.content, index=template.index+1).select_related('content').first()
 
         template.completed = True
-        # template.save()
+        template.save()
 
         html_response = ''
         if next_template:
@@ -207,11 +207,11 @@ class ShortQuizComplited(View):
             answer = f'option{answer}',
             is_correct = True if short_quiz.correct_option == f'option{answer}' else False,
         )
-        # short_quiz_submit.save()
+        short_quiz_submit.save()
 
         template = Template.objects.get(id=short_quiz.template.id)
         template.completed = True
-        # template.save()
+        template.save()
             
         html_response = ''
         if f'option{answer}' == short_quiz.correct_option:
@@ -256,11 +256,11 @@ class QuizComplited(View):
             answer = f'option{answer}',
             is_correct = True if quiz.correct_option == f'option{answer}' else False,
         )
-        # quiz_submit.save()
+        quiz_submit.save()
 
         template = Template.objects.get(id=quiz.template.id)
         template.completed = True
-        # template.save()
+        template.save()
             
         html_response = ''
         if f'option{answer}' == 'option1':

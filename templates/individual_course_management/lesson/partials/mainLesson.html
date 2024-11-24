@@ -5,8 +5,7 @@
     <div id="templates" class="flex flex-col gap-6 w-full items-center justify-center">
         {% for template in templates%}
             {% if template.completed %}
-                <div hx-get='{% url "templates" template.id %}' hx-trigger="load" hx-target="#templates"></div>
-                completed
+                <div class="w-full flex justify-center" hx-get='{% url "templates" template.id %}' hx-trigger="load"></div>
             {% endif %}      
         {% endfor %}
         {% if first_uncomplete_template %}
@@ -18,7 +17,7 @@
         {% endif %}
     </div>
     {% if all_templates_completed %}
-        <div class="w-full border-t py-4">
+        <div class="w-full border-t py-4 flex justify-end">
             <a href="{% url 'Contents' page_obj.next_page_number %}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>
         </div>
     {% endif %}

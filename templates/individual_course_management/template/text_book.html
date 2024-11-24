@@ -1,16 +1,26 @@
-<div class="flex flex-col gap-6">
-    <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-96 mx-auto"/>
+
+{% if template.completed %}
     <div class="flex flex-col gap-6">
-        <p>{{template.description}}</p>
+        <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-96 mx-auto"/>
+        <div class="flex flex-col gap-6">
+            <p>{{template.description}}</p>
+        </div>
     </div>
-    <div id="template_{{template.id}}" class="flex w-full">
-        <button hx-post="{% url 'textBookComplited' %}" 
-                hx-trigger="click" 
-                hx-vals='{"template_id": "{{ template.id }}"}' 
-                hx-target="#template_{{template.id}}" 
-                hx-swap="innerHTML" 
-                class="border border-zinc-300 p-1 bg-zinc-200 hover:border-black cursor-pointer w-full">
-            خواندم
-        </button>
+{% else %}
+    <div class="flex flex-col gap-6">
+        <img src="https://i.ibb.co/g6bGSmt/ben-griffiths-g-Ae1p-HGc6ms-unsplash.jpg" alt="quiz picture" class="object-cover w-96 mx-auto"/>
+        <div class="flex flex-col gap-6">
+            <p>{{template.description}}</p>
+        </div>
+        <div id="template_{{template.id}}" class="flex w-full">
+            <button hx-post="{% url 'textBookComplited' %}" 
+                    hx-trigger="click" 
+                    hx-vals='{"template_id": "{{ template.id }}"}' 
+                    hx-target="#template_{{template.id}}" 
+                    hx-swap="innerHTML" 
+                    class="border border-zinc-300 p-1 bg-zinc-200 hover:border-black cursor-pointer w-full">
+                خواندم
+            </button>
+        </div>
     </div>
-</div>
+{% endif %}
