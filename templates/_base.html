@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'static_build/style.css' %}" />
     {% comment %} {% render_bundle 'main' 'css' %} {% endcomment %}
 </head>
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <header>
         {% block header %}{% endblock header %}
     </header>

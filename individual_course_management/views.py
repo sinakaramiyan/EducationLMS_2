@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import View
+from django.urls import reverse
 
 class Dashboard(LoginRequiredMixin,TemplateView):
     template_name = "individual_course_management/dashboard/dashboard.html"
@@ -114,7 +115,7 @@ class Contents(LoginRequiredMixin, TemplateView):
         return context
     
 class Templates(LoginRequiredMixin, TemplateView):
-    template_name = 'individual_course_management/template/text_book.html'
+    
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if self.get_context_data(**kwargs)['type'] == 'quiz':
@@ -129,84 +130,83 @@ class Templates(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         template_id = self.kwargs.get('template_id')
         template = Template.objects.filter(id=template_id).first()
+        enrolment = Enrolment.objects.filter(role_assignment__user=self.request.user, course_enroll__course=template.content.lesson.chapter.course).select_related('role_assignment','course_enroll__course__course_group').first()
 
         context = {
             'template': template,
             'type': template.type,
         }
-        next_template = Template.objects.filter(content=template.content, index=template.index+1).first()
+        next_template = Template.objects.filter(content=template.content, index=template.index+1).select_related('content').first()
         if next_template:
             context.update({
                 'next_template': next_template,
             })
         else:
-            next_content = Content.objects.filter(lesson=template.content.lesson, index=template.content.index+1).first()
+            next_content = Content.objects.filter(lesson=template.content.lesson, index=template.content.index+1).select_related('lesson').first()
             if next_content:
                 context.update({
                     'next_content': next_content
                 })
-            print(next_content,'next_content')
-                
-            
-
+        
         if template.type == 'quiz':
             quiz = Quiz.objects.filter(template=template_id).select_related('template').first()
+            quiz_completed = QuizSubmit.objects.filter(quiz=quiz, enrolment=enrolment).select_related('quiz', 'enrolment').first()
             context.update({
-                'quiz': quiz
+                'quiz': quiz,
+                'quiz_completed': quiz_completed
             })
         elif template.type == 'shortquiz':
             short_quiz = ShortQuiz.objects.filter(template=template_id).select_related('template').first()
+            short_quiz_completed = ShortQuizSubmit.objects.filter(short_quiz=short_quiz, enrolment=enrolment).select_related('short_quiz', 'enrolment').first()
             context.update({
-                'short_quiz': short_quiz
+                'short_quiz': short_quiz,
+                'short_quiz_completed': short_quiz_completed
             })
 
         return context
     
-class TemplateComplited(View):
+class ShortQuizComplited(View):
     def post(self, request, *args, **kwargs):
-        try:
-            print("Received data:", request.body)
-            data = json.loads(request.body)
+        answer = request.POST.get('answer')
+        short_quiz_id = request.POST.get('short_quiz_id') 
+        short_quiz = ShortQuiz.objects.filter(id=short_quiz_id).first()
+        enrolment = Enrolment.objects.filter(role_assignment__user=self.request.user, course_enroll__course=short_quiz.template.content.lesson.chapter.course).select_related('role_assignment','course_enroll__course__course_group').first()
+        next_template = Template.objects.filter(content=short_quiz.template.content, index=short_quiz.template.index+1).select_related('content').first()
 
-            enrolment = Enrolment.objects.get(role_assignment__user=self.request.user)
+        short_quiz_submit = ShortQuizSubmit(
+            short_quiz = short_quiz,
+            enrolment = enrolment,
+            answer = f'option{answer}',
+            is_correct = True if short_quiz.correct_option == f'option{answer}' else False,
+        )
+        # short_quiz_submit.save()
+            
+        html_response = ''
+        if f'option{answer}' == short_quiz.correct_option:
+            if short_quiz.correct_option == 'option1':
+                html_response = f'<div class="border border-zinc-300 p-1 select-none" style="background-color: green">{short_quiz.option1}</div>' + f'<div class="border border-zinc-300 p-1 select-none">{short_quiz.option2}</div>'
+            else:
+                html_response = f'<div class="border border-zinc-300 p-1 select-none">{short_quiz.option1}</div>' + f'<div class="border border-zinc-300 p-1 select-none" style="background-color: green">{short_quiz.option2}</div>'
+        else:
+            if short_quiz.correct_option == 'option1':
+                html_response = f'<div class="border border-zinc-300 p-1 select-none">{short_quiz.option1}</div>' + f'<div class="border border-zinc-300 p-1 select-none" style="background-color: red">{short_quiz.option2}</div>'
+            else:
+                html_response = f'<div class="border border-zinc-300 p-1 select-none" style="background-color: red">{short_quiz.option1}</div>' + f'<div class="border border-zinc-300 p-1 select-none">{short_quiz.option2}</div>'
+        if next_template:
+            next_template_url = reverse("templates", args=[next_template.id])
+            html_response += (
+                '<div class="flex justify-end border-y py-4 w-full">'
+                f'<a hx-get="{next_template_url}" hx-trigger="click" hx-target="#templates" hx-swap="beforeend" hx-on::after-request="this.closest(\'.flex\').remove()" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer border border-blue-500 text-blue-500 bg-white hover:bg-blue-100 focus:ring-2 focus:ring-blue-300">بخش بعد</a>'
+                '</div>'
+            )
+        else:
+            next_content = Content.objects.filter(lesson=short_quiz.template.content.lesson, id=short_quiz.template.content.id+1).select_related('lesson').first()
+            next_content_url = reverse("Contents", args=[next_content.id])
+            html_response += (
+                '<div class="flex justify-end w-full border-y py-4">'
+                f'<a href="{next_content_url}" class="w-fit inline-flex items-center px-6 py-2 text-base font-light text-center cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300">پایان بخش</a>'
+                '</div>'
+            )
 
-            if(data['template'] == 'textbook'):
-                template_text = Template.objects.get(id=data['template_id'])
-                template_text.completed = True
-                template_text.save()
-            elif(data['template'] == 'quiz'):
-                template_text = Template.objects.get(id=data['template_id'])
-                template_text.completed = True
-                template_text.save()
 
-                quiz = Quiz.objects.get(template=data['template_id'])
-
-                quiz_submit = QuizSubmit(
-                    quiz = quiz,
-                    enrolment = enrolment,
-                    answer = data['quiz_answer'],
-                    is_correct = data['is_correct'],
-                    created_at=timezone.now().date(),
-                    modified_at=timezone.now().date()
-                )
-                quiz_submit.save()
-
-            elif(data['template'] == 'short_quiz'):
-                template_text = Template.objects.get(id=data['template_id'])
-                template_text.completed = True
-                template_text.save()
-
-                short_quiz = ShortQuiz.objects.get(template=data['template_id'])
-
-                short_quiz_submit = ShortQuizSubmit(
-                    short_quiz = short_quiz,
-                    enrolment = enrolment,
-                    answer = data['short_quiz_answer'],
-                    is_correct = data['is_correct'],
-                    created_at=timezone.now().date(),
-                    modified_at=timezone.now().date()
-                )
-                short_quiz_submit.save()
-        except:
-            print('sina')
-        return JsonResponse({'data': data})
+        return HttpResponse(html_response)
